@@ -4,7 +4,7 @@ const Header = () => {
   // Creo es Estado [darkMode] y el cambio [setDarkMode(Es decir que es la funcion que hara cambiar este estado)]
   // false sera el estado inicial de mi useState
   const [darkMode, setDarkMode] = useState(false);
-  console.log(darkMode);
+
   // Funcion que va acambiar el estado
   const handleClick = () => {
     setDarkMode(!darkMode);
