@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useMemo } from "react";
 
 // vamos añadir a cada personaje el boton favorito usando useReducer
 // para eso creo el estado inicial como un array vacio
@@ -28,6 +28,10 @@ const Characters = () => {
   // por eso recibe como parametro a  favoriteReducer, inicialState
   const [favorites, dispatch] = useReducer(favoriteReducer, inicialState);
 
+  //   crear es estado con useState para hacer la busqueda de los personajes
+  // que despues voy a trabajar con useMemo
+  const [search, setSearch] = useState("");
+
   // Aqui usaremos el useEffect para hacer el llamado a una API
   // en el fetch
   // el response lo convertimos en un objeto .json para poderlo manipular
@@ -43,6 +47,25 @@ const Characters = () => {
     dispatch({ type: "ADD_TO_FAVORITE", payload: favorite });
   };
 
+  //   funcion para manejar la busqueda
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
+
+  //   funcion para filtrar los personajes
+  //   characters son los personajes
+  //   usamos useMemo
+  //   const filteredUsers = characters.filter((user) => {
+  //     return user.name.toLowerCase().includes(search.toLowerCase());
+  //   });
+  const filteredUsers = useMemo(
+    () =>
+      characters.filter((user) => {
+        return user.name.toLowerCase().includes(search.toLowerCase());
+      }),
+    [characters, search]
+  );
+
   return (
     <>
       <div className="characters">
@@ -51,9 +74,15 @@ const Characters = () => {
           <li key={favorite.id}>{favorite.name}</li>
         ))}
 
+        {/* agrego el input de la busqueda */}
+        <div className="search">
+          <input type="text" value={search} onChange={handleSearch} />
+        </div>
+
         {/* mapeamos el Estado para retornar un nuevo arreglo con las instrucciones que le pasemos
-        aqui vamos a pasar de personajes a personaje */}
-        {characters.map((character) => (
+        aqui vamos a pasar de personajes a personaje y usamos la funcion que
+        filtra el personaje filteredUsers*/}
+        {filteredUsers.map((character) => (
           <div className="item" key={character.id}>
             <h2>{character.name}</h2>
             <button type="button" onClick={() => handleClick(character)}>
